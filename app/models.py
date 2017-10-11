@@ -19,6 +19,15 @@ class Employee(UserMixin, db.Model, Base):
     def __repr__(self):
         return '< Employee %r>' % self.username
 
+'''
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+'''
 class Engineer(Employee):
     __tablename__ = 'engineer'
     id = db.Column(db.Integer, db.ForeignKey('employee.id'), primary_key=True)

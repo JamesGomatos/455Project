@@ -1,0 +1,19 @@
+
+start database gui - sqlite_web data-dev.sqlite
+
+--------------------------------------------------------------------
+git clone
+git update
+
+-------------------------------------------------------------------
+
+from sqlalchemy import update
+>>> admin = User.query.filter_by(username='jpg').first()
+>>> admin.role_id=3
+>>> db.session.commit()
+
+"Could have also done it the way below."
+
+user = User.query.get(5)
+user.name = 'New Name'
+db.session.commit()
