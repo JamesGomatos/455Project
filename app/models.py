@@ -1,4 +1,4 @@
-from . import db
+from . import db, login_manager
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 from flask_login import UserMixin
@@ -124,11 +124,12 @@ class Flight(db.model):
     def __repr__(self):
         return '<Flight %r' % self.id
 
+'''
+
 @login_manager.user_loader
-def user_loader(user_id):
+def user_loader(id):
     """Given *user_id*, return the associated User object.
 
     :param unicode user_id: user_id (email) user to retrieve
     """
-    return User.query.get(user_id)
-'''
+    return Employee.query.get(id)
