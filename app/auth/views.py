@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, \
 from . import auth
 from .. import db
 from .forms import LoginForm
-from ..models import Employee
+from ..models import User
 import sys
 
 
@@ -12,7 +12,7 @@ import sys
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = Employee.query.filter_by(usrename=form.email.data).first()
+        user = User.query.filter_by(usrename=form.email.data).first()
         password = user.password
         # print(password, file=sys.stderr)
         if user is not None and form.password.data == password:

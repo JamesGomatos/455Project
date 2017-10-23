@@ -17,3 +17,44 @@ from sqlalchemy import update
 user = User.query.get(5)
 user.name = 'New Name'
 db.session.commit()
+-------------------------------------------------------------------
+
+class Employee(UserMixin, db.Model, Base):
+    __tablename__ = 'employee'
+    id = db.Column(db.Integer, primary_key=True)
+    usrename = db.Column(db.String(15))
+    password = db.Column(db.String(80))
+    type = db.Column(db.String(50))
+
+    __mapper_args__ = {
+        'polymorphic_identity' : 'employee',
+        'polymorphic_on': type
+    }
+
+    def __repr__(self):
+        return '< Employee %r>' % self.username
+
+'''
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+'''
+class Engineer(Employee):
+    __tablename__ = 'engineer'
+    id = db.Column(db.Integer, db.ForeignKey('employee.id'), primary_key=True)
+
+    __mapper_args__= {
+        'polymorphic_identity': 'engineer',
+    }
+
+
+class Manager(Employee):
+    __tablename__ = 'manager'
+    id = db.Column(db.Integer, db.ForeignKey('employee.id'), primary_key=True)
+
+    __mapper_args__={
+        'polymorphic_identity': 'manager',
+
+    }
