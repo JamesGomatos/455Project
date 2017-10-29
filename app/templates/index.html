@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.usrename }}{% else %}Stranger{% endif %}!</h1>
+<div>
+    <h1 class="indexHeader">Choose An Option:</h1>
 </div>
+<div class="container">
+    <div class="box box1">View Aircraft</div>
+    <div class="box box2">View Engines</div>
+    <div class="box box3">Complete Maintenance</div>
+    <div class="box box4">View Maintenance History</div>
+    <div class="box box5">View Maintenance Due</div>
+    <div class="box box6">View Mechanics</div>
+  </div>
+</body>
 {% endblock %}
