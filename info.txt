@@ -97,3 +97,8 @@ class Manager(Employee):
         </div>
     </div>
   </div>
+---------------------------------------------------------------------------------
+TODO LIST
+
+Notice that it is not saving session on the maintenance worker page.
+Need to fix that.
