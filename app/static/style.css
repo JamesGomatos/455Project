@@ -14,6 +14,20 @@ h1.indexHeader{
   padding:10px;
 }
 
+.linker {
+  text-decoration: none;
+  color:white;
+  font-size: 40px;
+  text-align: center;
+  text-shadow:4px 4px 0 rgba(0,0,0,0.1);
+  padding:10px;
+}
+
+.linker:hover, .linker:active {
+    text-decoration: none;
+    color: #E0E0E0;
+}
+
 /* Colours for each box */
 .box1 { background:#1abc9c;}
 .box2 { background:#3498db;}
