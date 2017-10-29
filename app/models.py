@@ -18,6 +18,9 @@ class User(UserMixin, db.Model, Base):
         'polymorphic_on': type
     }
 
+    def what_type(self):
+        return self.type
+
     def __repr__(self):
         return '< User %r>' % self.username
 

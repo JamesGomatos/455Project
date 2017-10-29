@@ -1,9 +1,13 @@
+# THIS FILE CURRENTLY DOES NOTHING
+
 from flask import render_template, session, redirect, url_for, current_app
 from .. import db
 from ..models import User
 from . import main
 from .forms import NameForm
-
+from ..models import User
+from __future__ import print_function
+import sys
 
 @main.route('/', methods=['GET', 'POST'])
 def index():

@@ -7,17 +7,21 @@ from .forms import LoginForm
 from ..models import User
 import sys
 
-
+# Basically query functions
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(usrename=form.email.data).first()
         password = user.password
+        job_type = user.type
         # print(password, file=sys.stderr)
         if user is not None and form.password.data == password:
             login_user(user, form.remember_me.data)
-            return redirect(request.args.get('next') or url_for('main.index'))
+            if job_type == 'mechanic':
+                return redirect(request.args.get('next') or url_for('main.mechanic_menu'))
+            else:
+                return redirect(request.args.get('next') or url_for('main.index'))
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
 
