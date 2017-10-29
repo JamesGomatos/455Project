@@ -58,3 +58,42 @@ class Manager(Employee):
         'polymorphic_identity': 'manager',
 
     }
+
+--------------ADD THESE IN THIS ORDER----------------------------------------------------
+    Squadron.insert_squadrons()
+    Aircraft.insert_aircrafts()
+    Mechanic.insert_mechanics()
+    Pilot.insert_pilots()
+    Engine.insert_engines()
+    Flight.insert_flights()
+
+
+
+
+
+---------------------------------------------------------------------------------
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">DataBaseProject</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+  </div>
