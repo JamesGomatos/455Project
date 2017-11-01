@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+  <div>
+  </div>
+  <div class="container">
+    <ul>
+    {% for row in data %}
+      <li>{{row.job_id}}, {{row.aircraft_id}}, {{row.description}}, {{row.type_inspection}}, {{row.date_due}}, {{row.hours_due}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
