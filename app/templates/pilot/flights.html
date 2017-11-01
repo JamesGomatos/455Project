@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+  <div>
+  </div>
+  <div class="container">
+    <ul>
+    {% for flight in data %}
+      <li>{{flight.id}}, {{flight.pilot_id}}, {{flight.aircraft_id}}, {{flight.hours}}, {{flight.date}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

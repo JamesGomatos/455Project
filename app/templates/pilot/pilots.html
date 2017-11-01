@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+  <div>
+  </div>
+  <div class="container">
+    <ul>
+    {% for pilot in data %}
+      <li>{{pilot.id}}, {{pilot.name}}, {{pilot.squadron_id}}, {{pilot.hours}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

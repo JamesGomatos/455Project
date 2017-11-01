@@ -2,7 +2,7 @@ from . import db, login_manager
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 from flask_login import UserMixin
-
+from datetime import date
 
 class User(UserMixin, db.Model, Base):
     __tablename__ = 'user'
@@ -207,14 +207,14 @@ class Flight(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     pilot_id =db.Column(db.Integer, db.ForeignKey('pilot.id'))
     aircraft_id = db.Column(db.Integer, db.ForeignKey('aircrafts.id'))
-    hours = db.column(db.Integer)
-    date = db.column(db.Date)
+    hours = db.Column(db.Integer)
+    date = db.Column(db.String(150))
 
     @staticmethod
     def insert_flights():
         data = {
-        1700101: (4, 165339, 1.0, '17-0-01'),
-        1700201: (9, 168950, 2.0, '17-0-2')
+        1700101: (4, 165339, 1, 'January 1, 2005 1:33PM'),
+        1700201: (9, 168950, 2, 'January 2, 2005 2:33PM')
         }
         for i in data:
             flight = Flight()

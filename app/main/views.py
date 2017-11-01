@@ -2,11 +2,12 @@ from flask import render_template, redirect, url_for, abort, flash
 from flask_login import login_required, current_user
 from . import main
 from .. import db
-from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue
+from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot
 from sqlalchemy.sql import select
 
 '''
-render the index menu when called.
+render the correct menu when the home button is pressed for pilots and
+mechanics.
 '''
 @main.route('/')
 def index():
@@ -50,12 +51,44 @@ render maintenance due list when button pressed in the mechanic menu
 @main.route('/mechanic/maintenance_due')
 def mechanic_get_maintenance_due():
     data = MaintenanceDue.query.all()
-    return render_template('mechanic/maintenanceDue.html', data=data)
+    return render_template('mechanic/maintenance_due.html', data=data)
 
 
 '''
-render complete_maintenance menu when button pression in the mechanic menu
+render complete_maintenance menu when button pressed in the mechanic menu
 '''
 @main.route('/mechanic/complete_maintenance')
 def mechanic_complete_maintenance():
     return render_template('mechanic/complete_maintenance.html')
+
+'''
+render the piot menu when called
+'''
+@main.route('/pilot/menu')
+def pilot_menu():
+    return render_template('pilot/menu.html')
+
+'''
+render the flight query when button pressed in the pilot menu
+'''
+@main.route('/pilot/flights')
+def pilot_get_flight():
+    data =  Flight.query.all()
+    return render_template('pilot/flights.html', data=data)
+
+'''
+render the add flight menu when button pressed in the pilot menu
+'''
+@main.route('/pilot/add_flight')
+def pilot_add_flight():
+    return render_template('pilot/add_flight.html')
+
+
+'''
+render the a list of pilots when button view pilots button is
+pressed  in the pilot menu
+'''
+@main.route('/pilot/pilots')
+def pilot_list():
+    data = Pilot.query.all()
+    return render_template('pilot/pilots.html', data=data)

@@ -20,9 +20,13 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav mr-auto">
-      {% if current_user.is_authenticated %}
+      {% if current_user.is_authenticated and current_user.type == 'mechanic' %}
       <li class="nav-item active">
         <a class="nav-link" href="{{ url_for('main.mechanic_menu') }}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      {% elif current_user.is_authenticated and current_user.type == 'pilot' %}
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('main.pilot_menu') }}">Home <span class="sr-only">(current)</span></a>
       </li>
       {% endif %}
     </ul>

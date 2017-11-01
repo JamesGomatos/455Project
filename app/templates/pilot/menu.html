@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div>
+    <h1 class="indexHeader">{% if current_user.is_authenticated %} Hello Pilot {{ current_user.usrename }}, Please Choose An Option:</h1> {%endif%}
+</div>
+<div class="container">
+    <div class="second box8"><a class="linker" href="{{ url_for('main.pilot_get_flight') }}">View Flights</a></div>
+    <div class="second box9"><a class="linker" href="{{ url_for('main.pilot_list') }}"> View Pilots</a></div>
+    <div class="second box10"><a class="linker" href="{{ url_for('main.pilot_add_flight') }}"> Add Flight</a></div>
+    <div class="second box11"><a class="linker" href="{{ url_for('auth.login') }}"> Other</a></div>
+  </div>
+{% endblock %}

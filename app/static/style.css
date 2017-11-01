@@ -36,6 +36,11 @@ h1.indexHeader{
 .box5 { background:#f1c40f;}
 .box6 { background:#e67e22;}
 
+/* Boxes for pilot menu */
+.box8 { background:#1abc9c;}
+.box9 { background:#3498db;}
+.box10{ background:#9b59b6;}
+.box11{ background:#34495e;}
 
 /* We start writing out flexbox here. The above is just page setup */
 div.container {
@@ -49,4 +54,9 @@ div.container {
 
 .box {
   flex-basis:33.333%;
+}
+
+.second {
+  text-align: center;
+  flex-basis:50%;
 }
