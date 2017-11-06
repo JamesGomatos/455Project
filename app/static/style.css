@@ -56,7 +56,13 @@ div.container {
   flex-basis:33.333%;
 }
 
-.second {
+div.second-container {
+  margin-top: 50px;
   text-align: center;
-  flex-basis:50%;
+}
+
+div.second-container table {
+  width: 50%;
+  margin: auto;
+  float: none;;
 }
