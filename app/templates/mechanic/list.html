@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-  <div>
-  </div>
-  <div class="container">
-    <ul>
+  <div class="second-container">
+    <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Mechanic ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Squadron ID</th>
+      </tr>
+    </thead>
+    <tbody>
     {% for mechanic in data %}
-      <li>{{mechanic.id}}, {{mechanic.name}}, {{mechanic.squadron_id}}</li>
-      {% endfor %}
-    </ul>
+      <tr>
+        <th scope="row"> {{mechanic.id}} </th>
+        <td>{{mechanic.name}}</td>
+        <td>{{mechanic.squadron_id}}</td>
+        {% endfor %}
+    </tbody>
+  </table>
   </div>
 {% endblock %}
