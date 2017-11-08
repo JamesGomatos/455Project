@@ -21,14 +21,15 @@ def mechanic_menu():
     return render_template('mechanic/menu.html')
 
 '''
- Query to retrieve hours of a single aircraft by aircraft id
+  Query to retrieve aircraft by squadron
 '''
 @main.route('/mechanic/aircraft')
 def mechanic_get_aircraft():
+    squardron_id = current_user.squadron_id
     result=[]
-    sql = "SELECT id, airframe_hours FROM aircrafts"
-    data = db.engine.execute(sql)
-    for row in data:
+    sql = "SELECT * FROM aircrafts WHERE squardron_id = ?"
+    c = db.engine.connect()
+    for row in c.execute(sql, (squardron_id,)):
         result.append(row)
     return render_template('mechanic/aircraft.html', result=result)
 

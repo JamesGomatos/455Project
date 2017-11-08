@@ -12,7 +12,16 @@ def mechanic_get_aircraft():
         result.append(row)
     return render_template('mechanic/aircraft.html', result=result)
 
-    
+
+
+    @main.route('/mechanic/aircraft')
+    def mechanic_get_aircraft():
+        result=[]
+        sql = "SELECT id, airframe_hours FROM aircrafts"
+        data = db.engine.execute(sql)
+        for row in data:
+            result.append(row)
+        return render_template('mechanic/aircraft.html', result=result)
 
 --------------------------------------------------------------------
 git clone
