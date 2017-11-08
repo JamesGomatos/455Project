@@ -21,7 +21,8 @@ def mechanic_menu():
     return render_template('mechanic/menu.html')
 
 '''
-  Query to retrieve aircraft by squadron
+Query to retrieve aircraft by squadron
+
 '''
 @main.route('/mechanic/aircraft')
 def mechanic_get_aircraft():
@@ -34,12 +35,20 @@ def mechanic_get_aircraft():
     return render_template('mechanic/aircraft.html', result=result)
 
 '''
-render list of engines when button pressed in the mechanic menu
+Query to retrieve a list of engines matched with aircraft,
+specific to squadron. This query works but returns a weird result because there is no
+engine that is associated with airraft ID 168002
 '''
 @main.route('/mechanic/engine')
 def mechanic_get_engine():
-    data = Engine.query.all()
-    return render_template('mechanic/engine.html', data=data)
+    squardron_id = current_user.squadron_id
+    result=[]
+    sql = "SELECT a.id as engine_id, b.id as buno, b.t_m_s, b.squardron_id, a.position, a.e_hours " \
+          "FROM engines as a LEFT OUTER JOIN aircrafts as b ON b.id = a.aircraft_id WHERE squardron_id = ?"
+    c = db.engine.connect()
+    for row in c.execute(sql, (squardron_id,)):
+        result.append(row)
+    return render_template('mechanic/engine.html', result=result)
 
 '''
 render list of mechanics when button pressed in the mechanic menu

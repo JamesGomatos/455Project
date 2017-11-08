@@ -66,3 +66,7 @@ div.second-container table {
   margin: auto;
   float: none;;
 }
+
+div.table_heading {
+  text-align: center
+}
