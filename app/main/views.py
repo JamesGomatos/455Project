@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from . import main
 from .. import db
 from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot
-from sqlalchemy.sql import select
+from sqlalchemy.sql import text
 
 '''
 render the correct menu when the home button is pressed for pilots and
@@ -21,12 +21,16 @@ def mechanic_menu():
     return render_template('mechanic/menu.html')
 
 '''
-render the aircrafts when button pressed in the mechanic menu
+ Query to retrieve hours of a single aircraft by aircraft id
 '''
 @main.route('/mechanic/aircraft')
 def mechanic_get_aircraft():
-    data = Aircraft.query.all()
-    return render_template('mechanic/aircraft.html', data=data)
+    result=[]
+    sql = "SELECT id, airframe_hours FROM aircrafts"
+    data = db.engine.execute(sql)
+    for row in data:
+        result.append(row)
+    return render_template('mechanic/aircraft.html', result=result)
 
 '''
 render list of engines when button pressed in the mechanic menu

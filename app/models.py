@@ -230,11 +230,12 @@ class Flight(db.Model):
         return '<Flight %r' % self.id
 
 class MaintenanceDue(db.Model):
+    __tablename__ = 'maintenanceDues'
     job_id = db.Column(db.Integer, primary_key = True)
     aircraft_id = db.Column(db.Integer, db.ForeignKey('aircrafts.id'), primary_key = True)
     description = db.Column(db.String(150))
     type_inspection =  db.Column(db.String(80))
-    date_due = db.Column(db.Date)
+    date_due = db.Column(db.String(150))
     hours_due = db.Column(db.Integer)
 
     @staticmethod
@@ -246,17 +247,17 @@ class MaintenanceDue(db.Model):
         }
         for i in data:
             due_data = MaintenanceDue()
-            due_data.id = i
+            due_data.job_id = i
             due_data.aircraft_id = data[i][0]
             due_data.description = data[i][1]
             due_data.type_inspection = data[i][2]
             due_data.date_due = data[i][3]
             due_data.hours_due = data[i][4]
-            db.session.add(engine)
+            db.session.add(due_data)
         db.session.commit()
 
     def __repr__(self):
-        return '<MaintenanceDue %r' % job_id
+        return '<MaintenanceDue %r' % self.job_id
 
 
 class MaintenanceHistory(db.Model):

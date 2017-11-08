@@ -6,17 +6,13 @@
     <thead class="thead-dark">
       <tr>
         <th scope="col">Aircraft ID</th>
-        <th scope="col">Type Series Model</th>
         <th scope="col">Squadron ID</th>
-        <th scope="col">Airframe Hours</th>
       </tr>
     </thead>
     <tbody>
-    {% for aircraft in data %}
+    {% for aircraft in result %}
       <tr>
         <th scope="row"> {{aircraft.id}} </th>
-        <td>{{aircraft.t_m_s}}</td>
-        <td>{{aircraft.squardron_id}}</td>
         <td>{{aircraft.airframe_hours}}</td>
         {% endfor %}
     </tbody>

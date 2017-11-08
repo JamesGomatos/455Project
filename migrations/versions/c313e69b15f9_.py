@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 97aa9dc8d113
+Revision ID: c313e69b15f9
 Revises: 
-Create Date: 2017-11-01 12:19:13.455796
+Create Date: 2017-11-08 00:39:27.187520
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '97aa9dc8d113'
+revision = 'c313e69b15f9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -48,12 +48,12 @@ def upgrade():
     sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('maintenance_due',
+    op.create_table('maintenanceDues',
     sa.Column('job_id', sa.Integer(), nullable=False),
     sa.Column('aircraft_id', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(length=150), nullable=True),
     sa.Column('type_inspection', sa.String(length=80), nullable=True),
-    sa.Column('date_due', sa.Date(), nullable=True),
+    sa.Column('date_due', sa.String(length=150), nullable=True),
     sa.Column('hours_due', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.id'], ),
     sa.PrimaryKeyConstraint('job_id', 'aircraft_id')
@@ -103,7 +103,7 @@ def downgrade():
     op.drop_table('flights')
     op.drop_table('pilot')
     op.drop_table('mechanic')
-    op.drop_table('maintenance_due')
+    op.drop_table('maintenanceDues')
     op.drop_table('engines')
     op.drop_table('user')
     op.drop_table('aircrafts')
