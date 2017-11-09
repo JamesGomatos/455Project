@@ -271,12 +271,29 @@ class MaintenanceHistory(db.Model):
     mechanic_id = db.Column(db.Integer, db.ForeignKey(Mechanic.id))
     date_complete = db.Column(db.Date, primary_key=True)
 
+
     @staticmethod
     def insert_maintenanceHistoryData():
-        pass
+        data = {
+            36734001: (165339, '100 hr insp', 'A/F', 2150.0, 'jh1234', date('16/12/02')),
+            167330010: (167223, '50 hr insp', 'ENG', 2356.7, 'pm1005', date('16/11/28'))
+        }
+        for i in data:
+            due_data = MaintenanceDue()
+            due_data.job_id = i
+            due_data.aircraft_id = data[i][0]
+            due_data.description = data[i][1]
+            due_data.type_inspection = data[i][2]
+            due_data.aircraft_hours = data[i][3]
+            due_data.usrename= data[i][4]
+            due_data.mechanic_id = None
+            due_data.date_complete = data[i][5]
+            db.session.add(due_data)
+        db.session.commit()
+
 
     def __repr__(self):
-        return 'pass'
+        return '<MaintenaceHistory %r' % self.job_id
 
 '''
     @password.setter

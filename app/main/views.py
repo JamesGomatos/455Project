@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, abort, flash
+from flask import render_template, redirect, url_for, abort, flash, request
 from flask_login import login_required, current_user
 from . import main
 from .. import db
@@ -57,6 +57,9 @@ render list of mechanics when button pressed in the mechanic menu.
 Can talk about what sqlalcehmy provides through .query and how it is
 much easier and less messy than alternative.
 
+Could include current_user do we highlight?
+
+
 Need to decide if we want to
 render all the mechanics or just those mechanics that are not equal to current
 user and in the same squadron.
@@ -83,10 +86,20 @@ def mechanic_get_maintenance_due():
 
 
 '''
-render complete_maintenance menu when button pressed in the mechanic menu
+render complete_maintenance menu when button pressed in the mechanic menu.
+I'm thinking that we shouldn't have the mechanic put in a date and instead
+just automatically insert a timestamp. Could use momemt.js to continually show
+something.
 '''
-@main.route('/mechanic/complete_maintenance')
+@main.route('/mechanic/complete_maintenance', methods=['GET', 'POST'])
 def mechanic_complete_maintenance():
+    error = None
+    try:
+        if request.method == 'POST':
+            flash("You just tried to post!")
+    except Exception as e:
+        flash(e)
+        return render_template('mechanic/complete_maintenance.html', error=error)
     return render_template('mechanic/complete_maintenance.html')
 
 '''
