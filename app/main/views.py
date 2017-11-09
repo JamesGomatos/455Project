@@ -34,6 +34,7 @@ def mechanic_get_aircraft():
         result.append(row)
     return render_template('mechanic/aircraft.html', result=result)
 
+
 '''
 Query to retrieve a list of engines matched with aircraft,
 specific to squadron. This query works but returns a weird result because there is no
@@ -50,12 +51,25 @@ def mechanic_get_engine():
         result.append(row)
     return render_template('mechanic/engine.html', result=result)
 
+
 '''
-render list of mechanics when button pressed in the mechanic menu
+render list of mechanics when button pressed in the mechanic menu.
+Can talk about what sqlalcehmy provides through .query and how it is
+much easier and less messy than alternative.
+
+Need to decide if we want to
+render all the mechanics or just those mechanics that are not equal to current
+user and in the same squadron.
+
+@main.route('/mechanic/list')
+def mechanic_get_list():
+    data = Mechanic.query.filter(Mechanic.id is not current_user.id and Mechanic.squadron_id is current_user.squadron_id)
+    return render_template('mechanic/list.html', data=data)
+
 '''
 @main.route('/mechanic/list')
 def mechanic_get_list():
-    data = Mechanic.query.all()
+    data = Mechanic.query.filter(Mechanic.id != current_user.id)
     return render_template('mechanic/list.html', data=data)
 
 
