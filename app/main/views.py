@@ -5,6 +5,12 @@ from .. import db
 from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot
 from sqlalchemy.sql import text
 
+#-----------------------------View Methods-------------------------------------
+def createAircraftView():
+    c = db.engine.connect()
+    c.execute("DROP VIEW james")
+    c.execute("CREATE VIEW IF NOT EXISTS james (id, squardron_id) AS SELECT id, squardron_id FROM aircrafts")
+
 '''
 render the correct menu when the home button is pressed for pilots and
 mechanics.
@@ -20,15 +26,16 @@ render the mechanic menu when called
 def mechanic_menu():
     return render_template('mechanic/menu.html')
 
-'''
-Query to retrieve aircraft by squadron
+'''sqlalchemy_viewsviewsbiew
+Query to retrieve aircraft by squadron using view
 
 '''
 @main.route('/mechanic/aircraft')
 def mechanic_get_aircraft():
+    createAircraftView()
     squardron_id = current_user.squadron_id
     result=[]
-    sql = "SELECT * FROM aircrafts WHERE squardron_id = ?"
+    sql = "SELECT * FROM james WHERE squardron_id = ?"
     c = db.engine.connect()
     for row in c.execute(sql, (squardron_id,)):
         result.append(row)

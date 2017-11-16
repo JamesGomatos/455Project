@@ -3,6 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 from flask_login import UserMixin
 from datetime import date
+from sqlalchemy_views import CreateView, DropView
+from sqlalchemy.sql import text
+from sqlalchemy import Table, MetaData
 
 class User(UserMixin, db.Model, Base):
     __tablename__ = 'user'
@@ -133,6 +136,8 @@ class Aircraft(db.Model):
     t_m_s = db.Column(db.String(64))
     squardron_id = db.Column(db.Integer, db.ForeignKey('squadron.id'))
     airframe_hours = db.Column(db.Integer)
+
+
 
     '''
     Insert aircraft data into the database
@@ -305,7 +310,6 @@ class MaintenanceHistory(db.Model):
 
 '''
 
-
 @login_manager.user_loader
 def user_loader(id):
     """Given *user_id*, return the associated User object.
@@ -313,3 +317,6 @@ def user_loader(id):
     :param unicode user_id: user_id (email) user to retrieve
     """
     return User.query.get(id)
+
+
+#------------------------------RUN ALL------------------------------------------
