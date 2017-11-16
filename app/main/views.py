@@ -1,16 +1,22 @@
+from __future__ import print_function
 from flask import render_template, redirect, url_for, abort, flash, request
 from flask_login import login_required, current_user
 from . import main
 from .. import db
 from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot
 from sqlalchemy.sql import text
+import sys
 
-#-----------------------------View Methods-------------------------------------
+#-----------------------------SQL VIEWS-------------------------------------
+
+# Creates a view of aircraft buno's and the squadron that the aircraft belongs to
 def createAircraftView():
     c = db.engine.connect()
     c.execute("DROP VIEW james")
-    c.execute("CREATE VIEW IF NOT EXISTS james (id, squardron_id) AS SELECT id, squardron_id FROM aircrafts")
+    c.execute("CREATE VIEW IF NOT EXISTS james (id, t_m_s, squardron_id, airframe_hours) AS SELECT id, t_m_s, squardron_id, airframe_hours FROM aircrafts")
 
+
+#--------------------------MECHANIC MENU----------------------------------------
 '''
 render the correct menu when the home button is pressed for pilots and
 mechanics.
@@ -114,11 +120,15 @@ def mechanic_complete_maintenance():
     try:
         if request.method == 'POST':
             attempted_job_id = request.form['job_id']
-            attmepted_worker_id = request.form
     except Exception as e:
         flash(e)
         return render_template('mechanic/complete_maintenance.html', error=error)
     return render_template('mechanic/complete_maintenance.html')
+
+@main.route('/mechanic/maintenance_history')
+def mechanic_get_maintenance_history():
+    return render_template('mechanic/maintenance_history.html')
+#-------------------------------PILOT MENU--------------------------------------
 
 '''
 render the piot menu when called
