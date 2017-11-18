@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import click
 from app import create_app, db
 from app.models import User, Mechanic, Pilot, Squadron, Aircraft, Engine, Flight, MaintenanceDue, MaintenanceHistory
 from flask_script import Manager, Shell
@@ -15,6 +16,7 @@ def make_shell_context():
     Aircraft=Aircraft, Engine=Engine, Flight=Flight, MaintenanceDue=MaintenanceDue, MaintenanceHistory=MaintenanceHistory)
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
+
 
 
 

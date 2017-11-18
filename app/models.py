@@ -7,6 +7,7 @@ from sqlalchemy_views import CreateView, DropView
 from sqlalchemy.sql import text
 from sqlalchemy import Table, MetaData
 
+
 class User(UserMixin, db.Model, Base):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -218,8 +219,8 @@ class Flight(db.Model):
     @staticmethod
     def insert_flights():
         data = {
-        1700101: (4, 165339, 1, 'January 1, 2005 1:33PM'),
-        1700201: (9, 168950, 2, 'January 2, 2005 2:33PM')
+        1700101: (4, 165339, 1, '2005-01-01'),
+        1700201: (9, 168950, 2, '2005-01-02')
         }
         for i in data:
             flight = Flight()
@@ -234,21 +235,28 @@ class Flight(db.Model):
     def __repr__(self):
         return '<Flight %r' % self.id
 
+
+
+'''
+SQLite does not support built-in date and/or time storage class. Instead, it
+leverages some built-in date and time functions to use other storage classes such as TEXT, REAL, or INTEGER
+for storing the date and time values.
+'''
 class MaintenanceDue(db.Model):
     __tablename__ = 'maintenanceDues'
     job_id = db.Column(db.Integer, primary_key = True)
     aircraft_id = db.Column(db.Integer, db.ForeignKey('aircrafts.id'), primary_key = True)
     description = db.Column(db.String(150))
     type_inspection =  db.Column(db.String(80))
-    date_due = db.Column(db.String(150))
+    date_due = db.Column(db.String)
     hours_due = db.Column(db.Integer)
 
     @staticmethod
-    def insert_maintenanceDueData():
+    def insert_data():
         data = {
-            3671700101: (165339, 'monthly inspection', 'A/F', '17-01-20', 2200.0),
-            3031700201: (168001, 'eng insp', 'ENG', '17-10-10', 2150.0),
-            1691700101: (168950, '200 hr insp', 'A/F', '17-10-20', 1409.0)
+            3671700101: (165339, 'monthly inspection', 'A/F', '2017-01-01', 2200.0),
+            3031700201: (168001, 'eng insp', 'ENG', '2017-02-01', 2150.0),
+            1691700101: (168950, '200 hr insp', 'A/F', '2017-04-01', 1409.0)
         }
         for i in data:
             due_data = MaintenanceDue()
@@ -266,39 +274,40 @@ class MaintenanceDue(db.Model):
 
 
 class MaintenanceHistory(db.Model):
+    __tablename__ = 'maintenaceHistory'
     '''Should job_id be a foreign key?'''
     job_id = db.Column(db.Integer, primary_key=True)
-    aircraft_id = db.Column(db.Integer, db.ForeignKey('aircrafts.id'), primary_key = True)
+    aircraft_id = db.Column(db.Integer, db.ForeignKey('aircrafts.id'), primary_key=True)
     description = db.Column(db.String(150))
     type_inspection =  db.Column(db.String(80))
     aircraft_hours = db.Column(db.Integer)
     engine_hours = db.Column(db.Integer)
     mechanic_id = db.Column(db.Integer, db.ForeignKey(Mechanic.id))
-    date_complete = db.Column(db.Date, primary_key=True)
+    date_complete = db.Column(db.String, primary_key=True)
 
 
     @staticmethod
-    def insert_maintenanceHistoryData():
+    def insert_data():
         data = {
-            36734001: (165339, '100 hr insp', 'A/F', 2150.0, 'jh1234', date('16/12/02')),
-            167330010: (167223, '50 hr insp', 'ENG', 2356.7, 'pm1005', date('16/11/28'))
+            36734001: (165339, '100 hr insp', 'A/F', 2150, '1', '16-12-02')
         }
         for i in data:
-            due_data = MaintenanceDue()
+            due_data = MaintenanceHistory()
             due_data.job_id = i
             due_data.aircraft_id = data[i][0]
             due_data.description = data[i][1]
             due_data.type_inspection = data[i][2]
             due_data.aircraft_hours = data[i][3]
-            due_data.usrename= data[i][4]
-            due_data.mechanic_id = None
+            due_data.mechanic_id = data[i][4]
             due_data.date_complete = data[i][5]
             db.session.add(due_data)
         db.session.commit()
 
-
     def __repr__(self):
         return '<MaintenaceHistory %r' % self.job_id
+
+
+
 
 '''
     @password.setter
@@ -320,3 +329,13 @@ def user_loader(id):
 
 
 #------------------------------RUN ALL------------------------------------------
+
+def call_all():
+    Squadron.insert_squadrons()
+    Aircraft.insert_aircrafts()
+    Mechanic.insert_mechanics()
+    Pilot.insert_pilots()
+    Engine.insert_engines()
+    Flight.insert_flights()
+    MaintenanceDue.insert_data()
+    MaintenanceHistory.insert_data()
