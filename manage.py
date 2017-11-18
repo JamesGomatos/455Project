@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import click
 from app import create_app, db
 from app.models import User, Mechanic, Pilot, Squadron, Aircraft, Engine, Flight, MaintenanceDue, MaintenanceHistory
 from flask_script import Manager, Shell
@@ -18,14 +17,12 @@ manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 
 
-
-
-@manager.command
-def test():
-    """Run the unit tests."""
-    import unittest
-    tests = unittest.TestLoader().discover('tests')
-    unittest.TextTestRunner(verbosity=2).run(tests)
+#-----------------------------SQL VIEWS-------------------------------------
+@main.before_first_request
+def createAircraftView():
+    c = db.engine.connect()
+    c.execute("DROP VIEW IF EXISTS aircraft_view")
+    c.execute("CREATE VIEW IF NOT EXISTS aircraft_view (id, t_m_s, squardron_id, airframe_hours) AS SELECT id, t_m_s, squardron_id, airframe_hours FROM aircrafts")
 
 
 if __name__ == '__main__':

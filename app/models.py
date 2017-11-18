@@ -307,18 +307,6 @@ class MaintenanceHistory(db.Model):
         return '<MaintenaceHistory %r' % self.job_id
 
 
-
-
-'''
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-'''
-
 @login_manager.user_loader
 def user_loader(id):
     """Given *user_id*, return the associated User object.
@@ -326,6 +314,10 @@ def user_loader(id):
     :param unicode user_id: user_id (email) user to retrieve
     """
     return User.query.get(id)
+
+
+
+
 
 
 #------------------------------RUN ALL------------------------------------------

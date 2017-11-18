@@ -7,14 +7,6 @@ from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, P
 from sqlalchemy.sql import text
 import sys
 
-#-----------------------------SQL VIEWS-------------------------------------
-
-# Creates a view of aircraft buno's and the squadron that the aircraft belongs to
-def createAircraftView():
-    c = db.engine.connect()
-    c.execute("DROP VIEW james")
-    c.execute("CREATE VIEW IF NOT EXISTS james (id, t_m_s, squardron_id, airframe_hours) AS SELECT id, t_m_s, squardron_id, airframe_hours FROM aircrafts")
-
 
 #--------------------------MECHANIC MENU----------------------------------------
 '''
@@ -38,10 +30,9 @@ Query to retrieve aircraft by squadron using view
 '''
 @main.route('/mechanic/aircraft')
 def mechanic_get_aircraft():
-    createAircraftView()
     squardron_id = current_user.squadron_id
     result=[]
-    sql = "SELECT * FROM james WHERE squardron_id = ?"
+    sql = "SELECT * FROM aircraft_view WHERE squardron_id = ?"
     c = db.engine.connect()
     for row in c.execute(sql, (squardron_id,)):
         result.append(row)
