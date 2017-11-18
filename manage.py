@@ -18,7 +18,7 @@ manager.add_command('db', MigrateCommand)
 
 
 #-----------------------------SQL VIEWS-------------------------------------
-@main.before_first_request
+@app.before_first_request
 def createAircraftView():
     c = db.engine.connect()
     c.execute("DROP VIEW IF EXISTS aircraft_view")
