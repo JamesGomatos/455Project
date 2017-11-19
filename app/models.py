@@ -263,7 +263,7 @@ class MaintenanceDue(db.Model):
             due_data.aircraft_id = data[i][0]
             due_data.description = data[i][1]
             due_data.type_inspection = data[i][2]
-            due_data.date_due = (data[i][3])
+            due_data.date_due = data[i][3]
             due_data.hours_due = data[i][4]
             db.session.add(due_data)
         db.session.commit()

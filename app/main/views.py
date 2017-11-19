@@ -6,6 +6,7 @@ from .. import db
 from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot, MaintenanceHistory
 from sqlalchemy.sql import text
 import sys
+from datetime import date
 
 
 #--------------------------MECHANIC MENU----------------------------------------
@@ -100,19 +101,31 @@ render complete_maintenance menu when button is pressed in the mechanic menu.
 I'm thinking that we shouldn't have the mechanic put in a date and instead
 just automatically insert a timestamp. Could use momemt.js to continually show
 something.
+
+Should I add a trigger to insert?
 '''
 @main.route('/mechanic/complete_maintenance', methods=['GET', 'POST'])
 def mechanic_complete_maintenance():
     data = MaintenanceDue.query.all()
+    result=[]
     error = None
     try:
         if request.method == 'POST':
-            form_job_id = request.form['job_id']
-            form_description = request.form['description']
+            job_id = request.form['job_id']
+            description = request.form['description']
+            date_complete = request.form['date_complete']
+            sel = "SELECT aircraft_id, type_inspection, hours_due FROM maintenanceDues WHERE job_id = ?"
+            dele = "DELETE FROM maintenanceDues WHERE job_id=? AND description=?"
+            ins = " INSERT into MaintenanceHistory VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
             c = db.engine.connect()
-            sql = "DELETE FROM maintenanceDues WHERE job_id=? AND description=?"
-            c.execute(sql, (form_job_id, form_description))
-            flash('You Successfully Completed Job ID' + form_job_id)
+            data = c.execute(sel, (job_id,)).fetchone()
+            aircraft_id = data.aircraft_id
+            type_inspection = data.type_inspection
+            aircraft_hours = data.hours_due
+            mechanic_id = current_user.id
+            c.execute(dele, (job_id, description,))
+            c.execute(ins, (job_id, aircraft_id, description, data.type_inspection, data.hours_due, 0, current_user.id, date_complete))
+            flash('You Successfully Completed Job ID ' + job_id)
             return redirect(url_for('main.mechanic_get_maintenance_history'))
     except Exception as e:
         flash(e)
