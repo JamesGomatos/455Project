@@ -2,8 +2,7 @@ from . import db, login_manager
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 from flask_login import UserMixin
-from datetime import date
-from sqlalchemy_views import CreateView, DropView
+import datetime
 from sqlalchemy.sql import text
 from sqlalchemy import Table, MetaData
 
@@ -264,7 +263,7 @@ class MaintenanceDue(db.Model):
             due_data.aircraft_id = data[i][0]
             due_data.description = data[i][1]
             due_data.type_inspection = data[i][2]
-            due_data.date_due = data[i][3]
+            due_data.date_due = (data[i][3])
             due_data.hours_due = data[i][4]
             db.session.add(due_data)
         db.session.commit()
@@ -274,8 +273,7 @@ class MaintenanceDue(db.Model):
 
 
 class MaintenanceHistory(db.Model):
-    __tablename__ = 'maintenaceHistory'
-    '''Should job_id be a foreign key?'''
+    __tablename__ = 'MaintenanceHistory'
     job_id = db.Column(db.Integer, primary_key=True)
     aircraft_id = db.Column(db.Integer, db.ForeignKey('aircrafts.id'), primary_key=True)
     description = db.Column(db.String(150))
@@ -289,7 +287,7 @@ class MaintenanceHistory(db.Model):
     @staticmethod
     def insert_data():
         data = {
-            36734001: (165339, '100 hr insp', 'A/F', 2150, '1', '16-12-02')
+            36734001: (165339, '100 hr insp', 'A/F', 2150, '1', '2016-12-02')
         }
         for i in data:
             due_data = MaintenanceHistory()

@@ -2,7 +2,7 @@
 
 {% block page_content %}
 <div class="table_heading">
-    <h1>Maintenance Due</h1>
+    <h1>Maintenance History</h1>
 </div>
   <div class="second-container">
     <table class="table">
@@ -12,8 +12,9 @@
         <th scope="col">Aircraft ID</th>
         <th scope="col">Description</th>
         <th scope="col">Type Inspection</th>
-        <th scope="col">Date Due</th>
-        <th scope="col">Hours Due</th>
+        <th scope="col">Airframe Hours</th>
+        <th scope="col">Mechanic ID</th>
+        <th scope="col">Date Complete</th>
       </tr>
     </thead>
     <tbody>
@@ -23,9 +24,10 @@
         <td>{{row.aircraft_id}}</td>
         <td>{{row.description}}</td>
         <td>{{row.type_inspection}}</td>
-        <td>{{row.date_due}}</td>
-        <td>{{row.hours_due}}</td>
-
+        <td>{{row.aircraft_hours}}</td>
+        <td>{{row.mechanic_id}}</td>
+        <td>{{row.date_complete}}</td>
+      </tr>
         {% endfor %}
     </tbody>
   </table>

@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, abort, flash, request
 from flask_login import login_required, current_user
 from . import main
 from .. import db
-from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot
+from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, Pilot, MaintenanceHistory
 from sqlalchemy.sql import text
 import sys
 
@@ -100,25 +100,30 @@ render complete_maintenance menu when button is pressed in the mechanic menu.
 I'm thinking that we shouldn't have the mechanic put in a date and instead
 just automatically insert a timestamp. Could use momemt.js to continually show
 something.
-
-It really doesn't make sense to have a worker id  either because we
-already have captured the worker ID based on who is logged in. Instead we should
-probaby put a completion note or something?
 '''
 @main.route('/mechanic/complete_maintenance', methods=['GET', 'POST'])
 def mechanic_complete_maintenance():
+    data = MaintenanceDue.query.all()
     error = None
     try:
         if request.method == 'POST':
-            attempted_job_id = request.form['job_id']
+            form_job_id = request.form['job_id']
+            form_description = request.form['description']
+            c = db.engine.connect()
+            sql = "DELETE FROM maintenanceDues WHERE job_id=? AND description=?"
+            c.execute(sql, (form_job_id, form_description))
+            flash('You Successfully Completed Job ID' + form_job_id)
+            return redirect(url_for('main.mechanic_get_maintenance_history'))
     except Exception as e:
         flash(e)
         return render_template('mechanic/complete_maintenance.html', error=error)
-    return render_template('mechanic/complete_maintenance.html')
+    return render_template('mechanic/complete_maintenance.html', data=data)
+
 
 @main.route('/mechanic/maintenance_history')
 def mechanic_get_maintenance_history():
-    return render_template('mechanic/maintenance_history.html')
+    data = MaintenanceHistory.query.all()
+    return render_template('mechanic/maintenance_history.html', data=data)
 #-------------------------------PILOT MENU--------------------------------------
 
 '''
