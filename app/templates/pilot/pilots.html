@@ -1,13 +1,28 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-  <div>
-  </div>
-  <div class="container">
-    <ul>
+<div class="table_heading">
+    <h1>Pilots By Squadron</h1>
+</div>
+  <div class="second-container">
+    <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Pilot ID</th>
+        <th scope="col">Pilot Name</th>
+        <th scope="col">Squadron ID</th>
+        <th scope="col">Pilot Hours</th>
+      </tr>
+    </thead>
+    <tbody>
     {% for pilot in data %}
-      <li>{{pilot.id}}, {{pilot.name}}, {{pilot.squadron_id}}, {{pilot.hours}}</li>
-      {% endfor %}
-    </ul>
+      <tr>
+        <th scope="row"> {{pilot.id}} </th>
+        <td>{{pilot.name}}</td>
+        <td>{{pilot.squadron_id}}</td>
+        <td>{{pilot.hours}}</td>
+        {% endfor %}
+    </tbody>
+  </table>
   </div>
 {% endblock %}
