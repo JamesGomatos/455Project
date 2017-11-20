@@ -17,9 +17,9 @@
     <tbody>
     {% for aircraft in result %}
       <tr>
-        <th scope="row"> {{aircraft.id}} </th>
+        <th scope="row"> {{aircraft.aircraft_id}} </th>
         <td>{{aircraft.t_m_s}}</td>
-        <td>{{aircraft.squardron_id}}</td>
+        <td>{{aircraft.squadron_id}}</td>
         <td>{{aircraft.airframe_hours}}</td>
         {% endfor %}
     </tbody>

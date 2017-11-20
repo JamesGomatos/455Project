@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: da7d59388eb4
+Revision ID: 4087cbaa6269
 Revises: 
-Create Date: 2017-11-18 23:29:58.474446
+Create Date: 2017-11-20 01:31:22.767596
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'da7d59388eb4'
+revision = '4087cbaa6269'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,16 +24,16 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('aircrafts',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('aircraft_id', sa.Integer(), nullable=False),
     sa.Column('t_m_s', sa.String(length=64), nullable=True),
-    sa.Column('squardron_id', sa.Integer(), nullable=True),
+    sa.Column('squadron_id', sa.Integer(), nullable=True),
     sa.Column('airframe_hours', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['squardron_id'], ['squadron.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['squadron_id'], ['squadron.id'], ),
+    sa.PrimaryKeyConstraint('aircraft_id')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('usrename', sa.String(length=15), nullable=True),
+    sa.Column('username', sa.String(length=15), nullable=True),
     sa.Column('password', sa.String(length=80), nullable=True),
     sa.Column('squadron_id', sa.Integer(), nullable=True),
     sa.Column('type', sa.String(length=50), nullable=True),
@@ -45,7 +45,7 @@ def upgrade():
     sa.Column('aircraft_id', sa.Integer(), nullable=True),
     sa.Column('position', sa.Integer(), nullable=True),
     sa.Column('e_hours', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.id'], ),
+    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.aircraft_id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('maintenanceDues',
@@ -55,7 +55,7 @@ def upgrade():
     sa.Column('type_inspection', sa.String(length=80), nullable=True),
     sa.Column('date_due', sa.String(), nullable=True),
     sa.Column('hours_due', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.id'], ),
+    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.aircraft_id'], ),
     sa.PrimaryKeyConstraint('job_id', 'aircraft_id')
     )
     op.create_table('mechanic',
@@ -77,22 +77,21 @@ def upgrade():
     sa.Column('description', sa.String(length=150), nullable=True),
     sa.Column('type_inspection', sa.String(length=80), nullable=True),
     sa.Column('aircraft_hours', sa.Integer(), nullable=True),
-    sa.Column('engine_hours', sa.Integer(), nullable=True),
     sa.Column('mechanic_id', sa.Integer(), nullable=True),
     sa.Column('date_complete', sa.String(), nullable=False),
-    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.id'], ),
+    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.aircraft_id'], ),
     sa.ForeignKeyConstraint(['mechanic_id'], ['mechanic.id'], ),
     sa.PrimaryKeyConstraint('job_id', 'aircraft_id', 'date_complete')
     )
     op.create_table('flights',
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('flight_id', sa.Integer(), nullable=False),
     sa.Column('pilot_id', sa.Integer(), nullable=True),
     sa.Column('aircraft_id', sa.Integer(), nullable=True),
     sa.Column('hours', sa.Integer(), nullable=True),
-    sa.Column('date', sa.String(length=150), nullable=True),
-    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.id'], ),
+    sa.Column('flight_date', sa.String(length=150), nullable=True),
+    sa.ForeignKeyConstraint(['aircraft_id'], ['aircrafts.aircraft_id'], ),
     sa.ForeignKeyConstraint(['pilot_id'], ['pilot.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('flight_id')
     )
     # ### end Alembic commands ###
 

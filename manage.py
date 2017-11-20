@@ -18,12 +18,25 @@ manager.add_command('db', MigrateCommand)
 
 
 #-----------------------------SQL VIEWS----------------------------------------
+'''
+a view of aircraft_ids and the squadron that the aircraft belongs to
+'''
 @app.before_first_request
 def createAircraftView():
     c = db.engine.connect()
     c.execute("DROP VIEW IF EXISTS aircraft_view")
-    c.execute("CREATE VIEW IF NOT EXISTS aircraft_view (id, t_m_s, squardron_id, airframe_hours) AS SELECT id, t_m_s, squardron_id, airframe_hours FROM aircrafts")
+    c.execute("CREATE VIEW IF NOT EXISTS aircraft_view (aircraft_id, t_m_s, squadron_id, airframe_hours) AS SELECT aircraft_id, t_m_s, squadron_id, airframe_hours FROM aircrafts")
 
+
+'''
+a view containing the flights that are canceled or in other words have no flight-date
+'''
+@app.before_first_request
+def canceled_flight_view():
+    c = db.engine.connect()
+    c.execute("DROP VIEW IF EXISTS canceled_flight_view")
+    sql = "CREATE VIEW IF NOT EXISTS canceled_flight_view (flight_id, pilot_id, aircraft_id, flight_date, squadron_id) AS SELECT flight_id, pilot_id, aircraft_id, flight_date, squadron_id FROM (SELECT flight_id, pilot_id, aircrafts.aircraft_id, squadron_id, flight_date FROM flights, aircrafts WHERE flights.aircraft_id=aircrafts.aircraft_id AND flight_date='canceled')"
+    c.execute(sql)
 
 #-----------------------------SQL TRIGGERS--------------------------------------
 
@@ -67,7 +80,7 @@ def createMaintEngineInspTrigger():
 
 
 
-#Create a trigger to update aircraft hours after a flight
+# A trigger to update aircraft engine after a flight
 @app.before_first_request
 def createUpdateEngineHoursTrigger():
     c = db.engine.connect()
@@ -79,7 +92,7 @@ def createUpdateEngineHoursTrigger():
 
 
 
-#Create a trigger to update aircraft hours after a flight
+# A trigger to update pilot hours after a flight
 @app.before_first_request
 def createUpdatePilotHoursTrigger():
     c = db.engine.connect()

@@ -2,7 +2,7 @@
 
 {% block page_content %}
 <div class="table_heading">
-    <h1>All Aircraft Flight Information </h1>
+    <h1>Canceled Flights for Squadron </h1>
 </div>
   <div class="second-container">
     <table class="table">
@@ -11,8 +11,7 @@
         <th scope="col">Flight ID</th>
         <th scope="col">Pilot ID</th>
         <th scope="col">Aircraft ID</th>
-        <th scope="col">Flight Hours</th>
-        <th scope="col">Flight Date</th>
+        <th scope="col">Flight Status</th>
       </tr>
     </thead>
     <tbody>
@@ -21,7 +20,6 @@
         <th scope="row"> {{flight.flight_id}} </th>
         <td>{{flight.pilot_id}}</td>
         <td>{{flight.aircraft_id}}</td>
-        <td>{{flight.hours}}</td>
         <td>{{flight.flight_date}}</td>
         {% endfor %}
     </tbody>

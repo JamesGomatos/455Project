@@ -12,7 +12,7 @@ import sys
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(usrename=form.email.data).first()
+        user = User.query.filter_by(username=form.email.data).first()
         password = user.password
         job_type = user.type
         # print(password, file=sys.stderr)
