@@ -5,13 +5,14 @@ from flask_login import UserMixin
 import datetime
 from sqlalchemy.sql import text
 from sqlalchemy import Table, MetaData
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(UserMixin, db.Model, Base):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15))
-    password = db.Column(db.String(80))
+    password_hash = db.Column(db.String(128))
     squadron_id = db.Column(db.Integer, db.ForeignKey('squadron.id'))
     type = db.Column(db.String(50))
 
@@ -24,6 +25,17 @@ class User(UserMixin, db.Model, Base):
     def what_type(self):
         return self.type
 
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
     def __repr__(self):
         return '< User %r>' % self.username
 
@@ -65,6 +77,16 @@ class Mechanic(User):
             db.session.add(mechanic)
         db.session.commit()
 
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
     def __repr__(self):
         return '<Mechanic %r>' % self.name
 
@@ -111,6 +133,17 @@ class Pilot(User):
             db.session.add(pilot)
         db.session.commit()
 
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
     def __repr__(self):
         return '<Pilot %r' % self.id
 
@@ -138,6 +171,17 @@ class Administrator(User):
             admin.squadron_id = users[i][3]
             db.session.add(admin)
         db.session.commit()
+
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return '<Administrator %r>' % self.name

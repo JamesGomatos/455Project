@@ -13,10 +13,9 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.email.data).first()
-        password = user.password
         job_type = user.type
         # print(password, file=sys.stderr)
-        if user is not None and form.password.data == password:
+        if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             if job_type == 'mechanic':
                 return redirect(request.args.get('next') or url_for('main.mechanic_menu'))
