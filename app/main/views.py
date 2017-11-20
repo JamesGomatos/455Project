@@ -7,7 +7,7 @@ from ..models import User, Aircraft, Engine, Mechanic, MaintenanceDue, Flight, P
 from sqlalchemy.sql import text
 import sys
 from datetime import date
-
+from .forms import DeleteForm
 
 #--------------------------MECHANIC MENU----------------------------------------
 '''
@@ -235,6 +235,14 @@ def canceled_squadron_flights():
 #------------------------------------------Administrator queries---------------
 
 '''
+render the piot menu when called
+'''
+@main.route('/administrator/menu')
+def admin_menu():
+    return render_template('administrator/menu.html')
+
+
+'''
 render the flight query when button pressed in the pilot menu
 May look werid because there are only flights added for a specific
 squadron right now
@@ -242,4 +250,65 @@ squadron right now
 @main.route('/administrator/flights')
 def admin_get_all_flights():
     data =  Flight.query.all()
-    return render_template('pilot/flights.html', data=data)
+    return render_template('administrator/all_flights.html', data=data)
+
+
+@main.route('/administrator/engines')
+def admin_get_engines():
+    result = []
+    sql = "SELECT e.id as engine_id, a.aircraft_id, t_m_s, squadron_id, position, e_hours " \
+          "FROM engines as e LEFT OUTER JOIN aircrafts as a ON e.aircraft_id = a.aircraft_id"
+    c = db.engine.connect()
+    for row in c.execute(sql):
+        result.append(row)
+    return render_template('administrator/engines.html', data=result)
+
+
+@main.route('/administrator/insert-user')
+def insert_user():
+    return render_template('administrator/insert_user.html')
+
+
+@main.route('/administrator/delete-user', methods=['GET', 'POST'])
+def delete_user():
+    data = User.query.all()
+    error = None
+    try:
+        if request.method == 'POST':
+            user_id = request.form['user_id']
+            username = request.form['username']
+            sql = "DELETE FROM user WHERE id = ? and username = ?"
+            c = db.engine.connect()
+            c.execute(sql, (user_id, username))
+            flash('You Successfully Deleted Username ' + username)
+            return redirect(url_for('main.view_users'))
+    except Exception as e:
+        flash(e)
+        return render_template('mechanic/delete_user.html', error=error)
+    return render_template('administrator/delete_user.html', data=data)
+
+
+@main.route('/administrator/update-user', methods=['GET', 'POST'])
+def update_user():
+    result = []
+    form = DeleteForm()
+    error = None
+    try:
+        if request.method == 'POST':
+            for k, v in form.data.items():
+                result.append(v)
+            sql = "UPDATE user SET username = ?, squadron_id = ?, type = ? WHERE id = ?"
+            c = db.engine.connect()
+            c.execute(sql, (result[1], result[2], result[3], result[0]))
+            flash('You Successfully Updated Username ' + result[1])
+            return redirect(url_for('main.view_users'))
+    except Exception as e:
+         flash(e)
+         return render_template('administrator/update_user.html', error=error, form=form)
+    return render_template('administrator/update_user.html', form=form)
+
+
+@main.route('/administrator/view-users')
+def view_users():
+    data = User.query.all()
+    return render_template('administrator/view_users.html', data=data)

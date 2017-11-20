@@ -1,9 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
-    SubmitField
+    SubmitField, IntegerField
 from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
 
-class NameForm(FlaskForm):
-    name = StringField('What is your name?', validators=[Required()])
+class DeleteForm(FlaskForm):
+    id = IntegerField('ID')
+    username = StringField('Username')
+    squadron_id = IntegerField('Squadron ID')
+    type = StringField('Job Type')
     submit = SubmitField('Submit')

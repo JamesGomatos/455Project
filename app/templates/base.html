@@ -30,6 +30,10 @@
       <li class="nav-item active">
         <a class="nav-link" href="{{ url_for('main.pilot_menu') }}">Home <span class="sr-only">(current)</span></a>
       </li>
+      {% elif current_user.is_authenticated and current_user.type == 'administrator' %}
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('main.admin_menu') }}">Home <span class="sr-only">(current)</span></a>
+      </li>
       {% endif %}
     </ul>
     <ul class="navbar-nav ">

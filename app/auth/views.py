@@ -22,6 +22,8 @@ def login():
                 return redirect(request.args.get('next') or url_for('main.mechanic_menu'))
             elif job_type == 'pilot':
                 return redirect(request.args.get('next') or url_for('main.pilot_menu'))
+            elif job_type == 'administrator':
+                return redirect(request.args.get('next') or url_for('main.admin_menu'))
             else:
                 return redirect(request.args.get('next') or url_for('main.index'))
         flash('Invalid username or password.')

@@ -114,8 +114,35 @@ class Pilot(User):
     def __repr__(self):
         return '<Pilot %r' % self.id
 
+#-------------------------------------------------------------------------------
+class Administrator(User):
+    __tablename__ = 'administrator'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    name = db.Column(db.String(80))
+    __mapper_args__= {'polymorphic_identity': 'administrator'}
 
+    '''
+    Insert mechanics into the database
+    '''
+    @staticmethod
+    def insert_admin():
+        users = {
+            100: ('jpg1234', 'james gomatos', 'dog', 0)
+        }
+        for i in users:
+            admin = Administrator()
+            admin.id = i
+            admin.username = users[i][0]
+            admin.name = users[i][1]
+            admin.password = users[i][2]
+            admin.squadron_id = users[i][3]
+            db.session.add(admin)
+        db.session.commit()
 
+    def __repr__(self):
+        return '<Administrator %r>' % self.name
+
+#-------------------------------------------------------------------------------
 class Squadron(db.Model):
     __tablename__= 'squadron'
     id = db.Column(db.Integer, primary_key=True)
@@ -135,7 +162,8 @@ class Squadron(db.Model):
             267: ('California'),
             303: ('California'),
             167: ('North Carolina'),
-            269: ('North Carolina')
+            269: ('North Carolina'),
+            0: ('')
         }
         for i in squads:
             squadron = Squadron()
@@ -359,6 +387,7 @@ def call_all():
     Squadron.insert_squadrons()
     Aircraft.insert_aircrafts()
     Mechanic.insert_mechanics()
+    Administrator.insert_admin()
     Pilot.insert_pilots()
     Engine.insert_engines()
     Flight.insert_flights()
