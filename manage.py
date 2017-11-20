@@ -35,7 +35,7 @@ a view containing the flights that are canceled or in other words have no flight
 def canceled_flight_view():
     c = db.engine.connect()
     c.execute("DROP VIEW IF EXISTS canceled_flight_view")
-    sql = "CREATE VIEW IF NOT EXISTS canceled_flight_view (flight_id, pilot_id, aircraft_id, flight_date, squadron_id) AS SELECT flight_id, pilot_id, aircraft_id, flight_date, squadron_id FROM (SELECT flight_id, pilot_id, aircrafts.aircraft_id, squadron_id, flight_date FROM flights, aircrafts WHERE flights.aircraft_id=aircrafts.aircraft_id AND flight_date='canceled')"
+    sql = "CREATE VIEW IF NOT EXISTS canceled_flight_view (flight_id, pilot_id, aircraft_id, flight_date, squadron_id, hours) AS SELECT flight_id, pilot_id, aircraft_id, flight_date, squadron_id, hours FROM (SELECT flight_id, pilot_id, aircrafts.aircraft_id, squadron_id, flight_date, hours FROM flights, aircrafts WHERE flights.aircraft_id=aircrafts.aircraft_id AND flight_date='canceled')"
     c.execute(sql)
 
 #-----------------------------SQL TRIGGERS--------------------------------------
@@ -47,6 +47,7 @@ so it will update correct if somebody enters a date that is before or after
 @app.before_first_request
 def createMaintMonthDueTrigger():
     c = db.engine.connect()
+    c.execute("DROP TRIGGER IF EXISTS init_monthly")
     c.execute('''CREATE TRIGGER IF NOT EXISTS init_monthly AFTER DELETE ON "maintenanceDues"
         WHEN OLD.description = "monthly inspection"
         BEGIN
@@ -59,6 +60,7 @@ def createMaintMonthDueTrigger():
 @app.before_first_request
 def createMaint50DueTrigger():
     c = db.engine.connect()
+    c.execute("DROP TRIGGER IF EXISTS initiate_50hr")
     c.execute('''CREATE TRIGGER IF NOT EXISTS initiate_50hr AFTER DELETE ON "maintenanceDues"
              WHEN old.description = "50 hr insp"
              BEGIN
@@ -71,6 +73,7 @@ def createMaint50DueTrigger():
 @app.before_first_request
 def createMaintEngineInspTrigger():
     c = db.engine.connect()
+    c.execute("DROP TRIGGER IF EXISTS initiate_engInsp")
     c.execute('''CREATE TRIGGER IF NOT EXISTS initiate_engInsp AFTER DELETE ON "maintenanceDues"
             WHEN old.description = "eng insp"
             BEGIN
@@ -84,10 +87,13 @@ def createMaintEngineInspTrigger():
 @app.before_first_request
 def createUpdateEngineHoursTrigger():
     c = db.engine.connect()
+    c.execute("DROP TRIGGER IF EXISTS update_eng_hours")
     c.execute('''CREATE TRIGGER IF NOT EXISTS update_eng_hours AFTER INSERT ON "flights"
-                 WHEN "aircraft_id" = new.aircraft_id
                  BEGIN
-                 UPDATE aircraft_squadron SET airframe_hours = airframe_hours + new.hours;
+                 UPDATE aircrafts SET airframe_hours = airframe_hours + new.hours
+                 WHERE new.aircraft_id = aircrafts.aircraft_id;
+                 UPDATE engines SET e_hours = e_hours + new.hours
+                 WHERE new.aircraft_id = engines.aircraft_id;
                  END;''')
 
 
@@ -96,10 +102,11 @@ def createUpdateEngineHoursTrigger():
 @app.before_first_request
 def createUpdatePilotHoursTrigger():
     c = db.engine.connect()
+    c.execute("DROP TRIGGER IF EXISTS update_pilot_hrs")
     c.execute('''CREATE TRIGGER IF NOT EXISTS update_pilot_hrs AFTER INSERT ON "flights"
-                 WHEN "pilots.pilot_id" = new.pilot_id
                  BEGIN
-                 UPDATE pilots set hours = hours + new.hours;
+                 UPDATE pilot set hours = hours + new.hours
+                 WHERE new.pilot_id = pilot.id;
                  END;''')
 
 

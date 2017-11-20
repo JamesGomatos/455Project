@@ -107,7 +107,7 @@ def mechanic_complete_maintenance():
             date_complete = request.form['date_complete']
             sel = "SELECT aircraft_id, type_inspection, hours_due FROM maintenanceDues WHERE job_id = ?"
             dele = "DELETE FROM maintenanceDues WHERE job_id=? AND description=?"
-            ins = " INSERT into MaintenanceHistory VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            ins = " INSERT into MaintenanceHistory VALUES (?, ?, ?, ?, ?, ?, ?)"
             c = db.engine.connect()
             data = c.execute(sel, (job_id,)).fetchone()
             aircraft_id = data.aircraft_id
@@ -115,7 +115,7 @@ def mechanic_complete_maintenance():
             aircraft_hours = data.hours_due
             mechanic_id = current_user.id
             c.execute(dele, (job_id, description,))
-            c.execute(ins, (job_id, aircraft_id, description, data.type_inspection, data.hours_due, 0, current_user.id, date_complete))
+            c.execute(ins, (job_id, aircraft_id, description, data.type_inspection, data.hours_due,current_user.id, date_complete))
             flash('You Successfully Completed Job ID ' + job_id)
             return redirect(url_for('main.mechanic_get_maintenance_history'))
     except Exception as e:
@@ -137,13 +137,44 @@ render the piot menu when called
 def pilot_menu():
     return render_template('pilot/menu.html')
 
+'''
+get the pilot history
+'''
+@main.route('/pilot/flights')
+def pilot_flights():
+    result = []
+    pilot_id=current_user.id
+    sql = "SELECT squadron_id, aircrafts.aircraft_id, flight_id, pilot_id, hours, flight_date FROM flights NATURAL JOIN aircrafts WHERE pilot_id = ?"
+    c = db.engine.connect()
+    for row in c.execute(sql, (pilot_id,)):
+        result.append(row)
+    return render_template('/pilot/flights.html', data=result)
 
 '''
-render the add flight menu when button pressed in the pilot menu
+data = db.session.query(Flight).\
+                join(Aircraft.aircraft_id).\
+                filter(Aircraft.aircraft_id == current_user.squadron_id).all()
 '''
-@main.route('/pilot/add_flight')
+@main.route('/pilot/add_flight', methods=['GET', 'POST'])
 def pilot_add_flight():
+    pilot_id = current_user.id
+    error = None
+    try:
+        if request.method == 'POST':
+            flight_id = request.form['flight_id']
+            aircraft_id = request.form['aircraft_id']
+            hours = request.form['hours']
+            date_complete = request.form['date_complete']
+            ins = " INSERT into flights VALUES (?, ?, ?, ?, ?)"
+            c = db.engine.connect()
+            c.execute(ins, (flight_id, pilot_id, aircraft_id, hours, date_complete,))
+            flash('You Successfully Completed Flight ID ' + flight_id)
+            return redirect(url_for('main.pilot_flights'))
+    except Exception as e:
+        flash(e)
+        return render_template('pilot/add_flight.html', error=error)
     return render_template('pilot/add_flight.html')
+
 
 
 '''
@@ -153,14 +184,11 @@ def pilot_add_flight():
 def pilot_list():
     result =[]
     squadron_id=current_user.squadron_id
-    ''' change user to users'''
     sql = "SELECT pilot.name, hours FROM pilot WHERE pilot.id in (SELECT user.id FROM user WHERE squadron_id = ?) ORDER BY hours DESC"
     c = db.engine.connect()
     for row in c.execute(sql, (squadron_id,)):
         result.append(row)
     return render_template('/pilot/pilots.html', data=result)
-
-
 
 '''
 Query to view total flight time of squadron
@@ -178,13 +206,13 @@ def flight_hours_per_squadron():
 
 
 '''
-Query to view flight history data of squadron
+Query to view flight history data of squadron, only for completed flights.
 '''
 @main.route('/pilot/squadron-history')
 def flight_squadron_history():
     result = []
     squadron_id = current_user.squadron_id
-    sql = "SELECT squadron_id, aircrafts.aircraft_id, flight_id, pilot_id, t_m_s, hours FROM flights NATURAL JOIN aircrafts WHERE squadron_id = ? ORDER BY pilot_id DESC"
+    sql = "SELECT squadron_id, aircrafts.aircraft_id, flight_id, pilot_id, hours FROM flights NATURAL JOIN aircrafts WHERE squadron_id = ? EXCEPT SELECT squadron_id, aircraft_id, flight_id, pilot_id, hours FROM canceled_flight_view ORDER BY pilot_id DESC"
     c = db.engine.connect()
     for row in c.execute(sql, (squadron_id)):
         result.append(row)
@@ -212,6 +240,6 @@ May look werid because there are only flights added for a specific
 squadron right now
 '''
 @main.route('/administrator/flights')
-def pilot_get_flight():
+def admin_get_all_flights():
     data =  Flight.query.all()
     return render_template('pilot/flights.html', data=data)
